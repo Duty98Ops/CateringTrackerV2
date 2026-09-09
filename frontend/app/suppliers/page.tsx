@@ -117,7 +117,7 @@ function AddSupplierModal({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SupplierFormData>({
+  } = useForm({
     resolver: zodResolver(supplierSchema),
     defaultValues: { name: "", contact: "", address: "", notes: "" },
   });

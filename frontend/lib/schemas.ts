@@ -65,14 +65,24 @@ export type EditItemFormData = z.infer<typeof editItemSchema>;
 
 // ── Supplier Schema ────────────────────────────────────────
 
+// export const supplierSchema = z.object({
+//   name: z
+//     .string()
+//     .min(1, "Nama supplier wajib diisi")
+//     .max(100, "Nama terlalu panjang"),
+//   contact: z.string().max(50).optional().default(""),
+//   address: z.string().max(200).optional().default(""),
+//   notes: z.string().max(200).optional().default(""),
+// });
 export const supplierSchema = z.object({
   name: z
     .string()
     .min(1, "Nama supplier wajib diisi")
     .max(100, "Nama terlalu panjang"),
-  contact: z.string().max(50).optional().default(""),
-  address: z.string().max(200).optional().default(""),
-  notes: z.string().max(200).optional().default(""),
+  contact: z.string().max(50).optional(),
+  address: z.string().max(200).optional(),
+  notes: z.string().max(200).optional(),
 });
 
-export type SupplierFormData = z.infer<typeof supplierSchema>;
+// export type SupplierFormData = z.infer<typeof supplierSchema>;
+export type SupplierFormData = z.input<typeof supplierSchema>;
