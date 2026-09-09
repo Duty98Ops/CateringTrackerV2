@@ -218,7 +218,7 @@ function DashboardPage({ onNav }) {
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
               <XAxis dataKey="date" tick={{ fontSize: 10 }} tickFormatter={d => d.slice(5)} />
               <YAxis tick={{ fontSize: 10 }} tickFormatter={fmtShort} />
-              <Tooltip formatter={v => fmt(v)} labelFormatter={l => `Tanggal: ${l}`} />
+              <Tooltip formatter={(value) => [fmt(value), "Total"]} labelFormatter={l => `Tanggal: ${l}`} />
               <Bar dataKey="total" fill="var(--accent)" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -234,7 +234,7 @@ function DashboardPage({ onNav }) {
                     innerRadius={40} outerRadius={70} paddingAngle={3}>
                     {dash.category_chart.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                   </Pie>
-                  <Tooltip formatter={v => fmt(v)} />
+                  <Tooltip formatter={(value) => [fmt(value), "Total"]} labelFormatter={l => `Tanggal: ${l}`} />
                 </PieChart>
               </ResponsiveContainer>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px", justifyContent: "center" }}>
@@ -573,7 +573,7 @@ function ReportsPage() {
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                       <XAxis dataKey="date" tick={{ fontSize: 10 }} tickFormatter={d => d.slice(5)} />
                       <YAxis tick={{ fontSize: 10 }} tickFormatter={fmtShort} />
-                      <Tooltip formatter={v => fmt(v)} />
+                      <Tooltip formatter={(value) => [fmt(value), "Total"]} labelFormatter={l => `Tanggal: ${l}`} />
                       <Bar dataKey="day_total" fill="#81b29a" radius={[4, 4, 0, 0]} name="Total" />
                     </BarChart>
                   </ResponsiveContainer>
@@ -614,7 +614,7 @@ function ReportsPage() {
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                     <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                     <YAxis tick={{ fontSize: 10 }} tickFormatter={fmtShort} />
-                    <Tooltip formatter={v => fmt(v)} />
+                    <Tooltip formatter={(value) => [fmt(value), "Total"]} labelFormatter={l => `Tanggal: ${l}`} />
                     <Line type="monotone" dataKey="total" stroke="#e07a5f" strokeWidth={3} dot={{ fill: "#e07a5f", r: 5 }} name="Total" />
                   </LineChart>
                 </ResponsiveContainer>
@@ -726,7 +726,7 @@ function SearchPage() {
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                   <XAxis dataKey="date" tick={{ fontSize: 10 }} tickFormatter={d => d.slice(5)} />
                   <YAxis tick={{ fontSize: 10 }} tickFormatter={fmtShort} />
-                  <Tooltip formatter={v => fmt(v)} />
+                  <Tooltip formatter={(value) => [fmt(value), "Total"]} labelFormatter={l => `Tanggal: ${l}`} />
                   <Line type="monotone" dataKey="price_per_unit" stroke="#5e60ce" strokeWidth={2} dot={{ r: 4 }} name="Harga/Unit" />
                 </LineChart>
               </ResponsiveContainer>
