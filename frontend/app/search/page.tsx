@@ -292,9 +292,12 @@ export default function SearchPage() {
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis dataKey="date" tick={{ fontSize: 10 }} tickFormatter={(v: string) => v.slice(5)} />
                   <YAxis tick={{ fontSize: 10 }} tickFormatter={formatCurrencyShort} />
-                  <Tooltip
-                    formatter={(v: number | null) => (v === null || v === undefined ? "—" : formatCurrency(v))}
-                  />
+                    <Tooltip
+                      formatter={(v) => {
+                        const value = Number(v);
+                        return Number.isFinite(value) ? formatCurrency(value) : "—";
+                      }}
+                    />
                   <Line
                     type="monotone"
                     dataKey="actual"
