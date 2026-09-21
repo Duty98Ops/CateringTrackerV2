@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +20,17 @@ const emptyItem = {
   unit: "kg",
   price_per_unit: "",
   category: "bahan_pokok",
+};
+
+/** Keep numeric fields valid even when text is pasted or entered via a mobile keyboard. */
+const sanitizeNumberInput = (value: string, allowDecimal = false) => {
+  const numeric = value.replace(/[^\d.,]/g, "");
+
+  if (!allowDecimal) return numeric.replace(/[.,]/g, "");
+
+  const normalized = numeric.replace(",", ".");
+  const [whole, ...decimalParts] = normalized.split(".");
+  return decimalParts.length > 0 ? `${whole}.${decimalParts.join("")}` : whole;
 };
 
 export default function AddTransactionPage() {
@@ -50,6 +61,21 @@ export default function AddTransactionPage() {
   });
 
   const { fields, append, remove } = useFieldArray({ control, name: "items" });
+
+  const numericInputProps = (
+    name: `items.${number}.quantity` | `items.${number}.price_per_unit`,
+    allowDecimal = false
+  ) => {
+    const field = register(name);
+
+    return {
+      ...field,
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        event.currentTarget.value = sanitizeNumberInput(event.currentTarget.value, allowDecimal);
+        field.onChange(event);
+      },
+    };
+  };
 
   const watchItems = watch("items");
 
@@ -174,7 +200,10 @@ export default function AddTransactionPage() {
                   <div>
                     <label className="text-[11px] font-semibold text-muted-foreground">Nama Bahan *</label>
                     <input
+                      type="text"
                       placeholder="cth: Ayam"
+                      inputMode="text"
+                      autoComplete="off"
                       {...register(`items.${i}.name`)}
                       className={inputCls(!!itemErrors?.name)}
                     />
@@ -187,11 +216,11 @@ export default function AddTransactionPage() {
                     <div>
                       <label className="text-[11px] font-semibold text-muted-foreground">Jumlah *</label>
                       <input
-                        type="number"
+                        type="text"
                         placeholder="0"
-                        step="any"
-                        min="0"
-                        {...register(`items.${i}.quantity`)}
+                        inputMode="decimal"
+                        pattern="[0-9]*[.,]?[0-9]*"
+                        {...numericInputProps(`items.${i}.quantity`, true)}
                         className={inputCls(!!itemErrors?.quantity)}
                       />
                       {itemErrors?.quantity && (
@@ -212,10 +241,11 @@ export default function AddTransactionPage() {
                   <div>
                     <label className="text-[11px] font-semibold text-muted-foreground">Harga / Unit *</label>
                     <input
-                      type="number"
+                      type="text"
                       placeholder="Rp"
-                      min="0"
-                      {...register(`items.${i}.price_per_unit`)}
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      {...numericInputProps(`items.${i}.price_per_unit`)}
                       className={inputCls(!!itemErrors?.price_per_unit)}
                     />
                     {itemErrors?.price_per_unit && (
@@ -250,7 +280,10 @@ export default function AddTransactionPage() {
                 >
                   <div>
                     <input
+                      type="text"
                       placeholder="cth: Ayam"
+                      inputMode="text"
+                      autoComplete="off"
                       {...register(`items.${i}.name`)}
                       className={inputCls(!!itemErrors?.name)}
                     />
@@ -260,11 +293,11 @@ export default function AddTransactionPage() {
                   </div>
                   <div>
                     <input
-                      type="number"
+                      type="text"
                       placeholder="0"
-                      step="any"
-                      min="0"
-                      {...register(`items.${i}.quantity`)}
+                      inputMode="decimal"
+                      pattern="[0-9]*[.,]?[0-9]*"
+                      {...numericInputProps(`items.${i}.quantity`, true)}
                       className={inputCls(!!itemErrors?.quantity)}
                     />
                     {itemErrors?.quantity && (
@@ -279,10 +312,11 @@ export default function AddTransactionPage() {
                   </select>
                   <div>
                     <input
-                      type="number"
+                      type="text"
                       placeholder="Rp"
-                      min="0"
-                      {...register(`items.${i}.price_per_unit`)}
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      {...numericInputProps(`items.${i}.price_per_unit`)}
                       className={inputCls(!!itemErrors?.price_per_unit)}
                     />
                     {itemErrors?.price_per_unit && (

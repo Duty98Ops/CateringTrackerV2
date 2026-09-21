@@ -781,5 +781,74 @@
       }
     ],
     "day_total": 70000.0
+  },
+  "2026-09-10": {
+    "bulk_inputs": [
+      {
+        "id": 1,
+        "supplier_id": null,
+        "timestamp": "2026-09-10 14:52:45",
+        "items": [
+          {
+            "name": "Kambing",
+            "quantity": 2.0,
+            "unit": "kg",
+            "price_per_unit": 35000.0,
+            "cost": 70000.0,
+            "category": "daging",
+            "deleted_at": null
+          }
+        ],
+        "total": 70000.0,
+        "deleted_at": null
+      }
+    ],
+    "day_total": 70000.0
+  },
+  "2026-09-15": {
+    "bulk_inputs": [
+      {
+        "id": 1,
+        "supplier_id": null,
+        "timestamp": "2026-09-15 10:12:32",
+        "items": [
+          {
+            "name": "Sapi",
+            "quantity": 3.0,
+            "unit": "kg",
+            "price_per_unit": 50000.0,
+            "cost": 150000.0,
+            "category": "bahan_pokok",
+            "deleted_at": null
+          }
+        ],
+        "total": 150000.0,
+        "deleted_at": null
+      }
+    ],
+    "day_total": 150000.0
+  },
+  "2026-09-21": {
+    "bulk_inputs": [
+      {
+        "id": 1,
+        "supplier_id": null,
+        "timestamp": "2026-09-21 18:59:11",
+        "items": [
+          {
+            "name": "ayam",
+            "quantity": 1.0,
+            "unit": "kg",
+            "price_per_unit": 10000.0,
+            "cost": 10000.0,
+            "category": "bahan_pokok",
+            "deleted_at": null
+          }
+        ],
+        "total": 10000.0,
+        "deleted_at": null
+      }
+    ],
+    "day_total": 10000.0
   }
 }

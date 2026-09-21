@@ -10,16 +10,14 @@ export const itemSchema = z.object({
   quantity: z
     .string()
     .min(1, "Jumlah wajib diisi")
-    .refine((v) => !isNaN(parseFloat(v)) && parseFloat(v) > 0, {
-      message: "Jumlah harus lebih dari 0",
-    }),
+    .regex(/^\d+(?:\.\d+)?$/, "Jumlah hanya boleh berisi angka")
+    .refine((v) => Number(v) > 0, { message: "Jumlah harus lebih dari 0" }),
   unit: z.string().min(1, "Satuan wajib dipilih"),
   price_per_unit: z
     .string()
     .min(1, "Harga wajib diisi")
-    .refine((v) => !isNaN(parseFloat(v)) && parseFloat(v) > 0, {
-      message: "Harga harus lebih dari 0",
-    }),
+    .regex(/^\d+$/, "Harga hanya boleh berisi angka")
+    .refine((v) => Number(v) > 0, { message: "Harga harus lebih dari 0" }),
   category: z.string().min(1, "Kategori wajib dipilih"),
 });
 
