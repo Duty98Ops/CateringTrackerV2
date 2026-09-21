@@ -40,9 +40,19 @@ export default function AddTransactionPage() {
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
     fetchSuppliers().then(setSuppliers).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+    const updateLayout = () => setIsDesktop(mediaQuery.matches);
+
+    updateLayout();
+    mediaQuery.addEventListener("change", updateLayout);
+    return () => mediaQuery.removeEventListener("change", updateLayout);
   }, []);
 
   const {
@@ -182,8 +192,9 @@ export default function AddTransactionPage() {
             return (
               <div key={field.id} className="mb-3 md:mb-1.5">
                 {/* MOBILE: stacked card layout */}
-                <div className="flex flex-col gap-2 rounded-lg border border-border p-3 md:hidden">
-                  <div className="flex items-center justify-between">
+                {!isDesktop && (
+                  <div className="flex flex-col gap-2 rounded-lg border border-border p-3">
+                    <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-muted-foreground">
                       Item #{i + 1}
                     </span>
@@ -270,14 +281,17 @@ export default function AddTransactionPage() {
                       Total: <span className="font-bold text-primary">{formatCurrency(cost)}</span>
                     </div>
                   )}
-                </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* DESKTOP: grid row */}
-                <div
-                  className={`hidden grid-cols-[2fr_1fr_90px_1.2fr_130px_32px] gap-x-2.5 rounded-lg p-2 md:grid ${
+                {isDesktop && (
+                  <div
+                    className={`grid grid-cols-[2fr_1fr_90px_1.2fr_130px_32px] gap-x-2.5 rounded-lg p-2 ${
                     i % 2 === 0 ? "bg-secondary/50" : ""
-                  }`}
-                >
+                    }`}
+                  >
                   <div>
                     <input
                       type="text"
@@ -340,10 +354,11 @@ export default function AddTransactionPage() {
                     ✕
                   </button>
                 </div>
+                )}
 
                 {/* Desktop cost preview line */}
-                {cost > 0 && (
-                  <div className="hidden pr-10 text-right text-[11px] text-muted-foreground md:block">
+                {isDesktop && cost > 0 && (
+                  <div className="pr-10 text-right text-[11px] text-muted-foreground">
                     = {formatCurrency(cost)}
                   </div>
                 )}
