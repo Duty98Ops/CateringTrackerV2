@@ -281,7 +281,6 @@ export default function AddTransactionPage() {
                       Total: <span className="font-bold text-primary">{formatCurrency(cost)}</span>
                     </div>
                   )}
-                    </div>
                   </div>
                 )}
 
