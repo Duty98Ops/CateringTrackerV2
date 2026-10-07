@@ -18,7 +18,7 @@ export default function RootLayout({
       <body>
         <div className="flex min-h-screen">
           <Sidebar />
-          <main className="w-full flex-1 overflow-x-hidden px-4 pb-8 pt-16 md:max-w-[1100px] md:px-7 md:pt-7">
+          <main className="w-full flex-1 overflow-x-hidden px-4 pb-12 pt-16 md:px-8 md:pt-7 max-w-[1480px]">
             {children}
           </main>
         </div>

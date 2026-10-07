@@ -211,20 +211,20 @@ export const UNITS = [
 ] as const;
 
 export const PIE_COLORS = [
-  "#e07a5f", "#3d405b", "#81b29a", "#f2cc8f", "#5e60ce",
-  "#48bfe3", "#f77f00", "#d62828", "#264653",
+  "#2563eb", "#06b6d4", "#10b981", "#f59e0b", "#8b5cf6",
+  "#f43f5e", "#f97316", "#6366f1", "#64748b",
 ];
 
 export const CATEGORY_COLORS: Record<string, string> = {
-  daging: "#e07a5f",
-  bahan_pokok: "#3d405b",
-  bumbu: "#81b29a",
-  packaging: "#f2cc8f",
-  susu_telur: "#5e60ce",
-  sayuran: "#48bfe3",
-  gas_listrik: "#f77f00",
-  minuman: "#d62828",
-  lainnya: "#264653",
+  daging: "#2563eb",
+  bahan_pokok: "#06b6d4",
+  bumbu: "#10b981",
+  packaging: "#f59e0b",
+  susu_telur: "#8b5cf6",
+  sayuran: "#f43f5e",
+  gas_listrik: "#f97316",
+  minuman: "#6366f1",
+  lainnya: "#64748b",
 };
 
 export function getCategoryColor(key: string, index = 0): string {

@@ -3,16 +3,26 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import {
+  LayoutDashboard,
+  Plus,
+  FolderKanban,
+  BarChart2,
+  Search,
+  Store,
+  Trash2,
+  HardDrive,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/", icon: "📊", label: "Dashboard" },
-  { href: "/add", icon: "➕", label: "Tambah" },
-  { href: "/transactions", icon: "📂", label: "Riwayat" },
-  { href: "/reports", icon: "📈", label: "Laporan" },
-  { href: "/search", icon: "🔍", label: "Cari" },
-  { href: "/suppliers", icon: "🏪", label: "Supplier" },
-  { href: "/trash", icon: "🗑️", label: "Sampah" },
+  { href: "/", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/add", icon: Plus, label: "Input Belanja" },
+  { href: "/transactions", icon: FolderKanban, label: "Riwayat" },
+  { href: "/reports", icon: BarChart2, label: "Analitik & Laporan" },
+  { href: "/search", icon: Search, label: "Pencarian Bahan" },
+  { href: "/suppliers", icon: Store, label: "Mitra Supplier" },
+  { href: "/trash", icon: Trash2, label: "Sampah / Arsip" },
 ];
 
 export function Sidebar() {
@@ -56,7 +66,7 @@ export function Sidebar() {
       {/* Sidebar — fixed drawer on mobile, sticky column on desktop */}
       <aside
         className={cn(
-          "fixed top-0 z-50 flex h-screen w-56 flex-col gap-1 overflow-y-auto border-r border-slate-800/80 p-3 transition-transform duration-200 shadow-sm",
+          "fixed top-0 z-50 flex h-screen w-60 flex-col overflow-y-auto border-r border-slate-800/80 p-3.5 transition-transform duration-200 shadow-sm",
           "md:sticky md:translate-x-0",
           mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}
@@ -72,51 +82,62 @@ export function Sidebar() {
         </button>
 
         {/* Logo */}
-        <div className="mb-5 px-3 pt-2 text-center">
-          <div className="text-3xl">🍳</div>
-          <div className="mt-1 text-sm font-extrabold tracking-tight text-white">
-            Catering Tracker
+        <div className="mb-4 flex items-center gap-3 px-2 pt-2">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 shadow-md shadow-blue-500/25 text-white">
+            <span className="text-lg">🍳</span>
           </div>
-          <div className="mt-0.5 text-[10px]" style={{ color: "hsl(var(--sidebar-text))" }}>
-            Monitoring Biaya Bahan
+          <div>
+            <div className="text-sm font-bold tracking-tight text-white">Catering</div>
+            <div className="text-[11px] text-slate-400">Cost Intelligence</div>
           </div>
         </div>
 
+        {/* Menu Section Label */}
+        <div className="mb-2 mt-4 px-3 text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+          Menu Utama
+        </div>
+
         {/* Nav Items */}
-        {NAV_ITEMS.map((item) => {
-          const isActive =
-            item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-2.5 rounded-lg px-3.5 py-2.5 text-[13px] font-medium transition-all",
-                isActive
-                  ? "font-bold text-white shadow-sm ring-1 ring-white/10"
-                  : "hover:bg-white/[0.06] hover:text-white"
-              )}
-              style={{
-                background: isActive ? "hsl(var(--primary) / 0.28)" : "transparent",
-                color: isActive
-                  ? "#ffffff"
-                  : "hsl(var(--sidebar-text))",
-              }}
-            >
-              <span className="text-base">{item.icon}</span>
-              {item.label}
-            </Link>
-          );
-        })}
+        <div className="flex flex-col gap-1">
+          {NAV_ITEMS.map((item) => {
+            const Icon = item.icon;
+            const isActive =
+              item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-[13px] font-medium transition-all",
+                  isActive
+                    ? "bg-blue-600/20 text-blue-400 font-semibold border border-blue-500/30 shadow-sm"
+                    : "text-slate-400 hover:bg-white/[0.05] hover:text-slate-100"
+                )}
+              >
+                <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-blue-400" : "text-slate-400")} />
+                <span className="truncate">{item.label}</span>
+                {isActive && (
+                  <span className="ml-auto h-1.5 w-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,1)]" />
+                )}
+              </Link>
+            );
+          })}
+        </div>
 
         {/* Footer */}
-        <div
-          className="mt-auto border-t border-white/5 p-3 text-center text-[10px]"
-          style={{ color: "hsl(var(--sidebar-text))" }}
-        >
-          File-Based Data Management
-          <br />
-          MVP v1.0
+        <div className="mt-auto pt-4">
+          <div className="rounded-xl bg-slate-900/90 border border-slate-800/80 p-2.5 flex items-center gap-2.5">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-800/90 border border-slate-700/50 text-slate-300">
+              <HardDrive className="h-4 w-4" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-[11px] font-bold text-slate-200 leading-tight">File-Based Data</div>
+              <div className="text-[9px] text-slate-400 leading-tight">Management</div>
+            </div>
+            <span className="ml-auto shrink-0 text-[9px] font-bold text-blue-400 bg-blue-950/80 border border-blue-800/70 px-1.5 py-0.5 rounded">
+              MVP V1.0
+            </span>
+          </div>
         </div>
       </aside>
     </>
