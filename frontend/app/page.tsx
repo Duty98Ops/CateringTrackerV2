@@ -10,7 +10,7 @@ import { BarChart3, CalendarClock, CalendarDays, CalendarRange, Plus, WalletCard
 
 import { fetchDashboard } from "@/lib/api";
 import type { DashboardData } from "@/lib/types";
-import { formatCurrency, PIE_COLORS } from "@/lib/types";
+import { formatCurrency, getCategoryColor } from "@/lib/types";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -74,7 +74,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stat Cards */}
-      <div className="flex flex-wrap gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           icon={<CalendarDays className="h-4 w-4" />}
           label="Hari Ini"
@@ -149,12 +149,12 @@ export default function DashboardPage() {
         </Card>
 
         {/* Pie Chart — 1/3 width */}
-        <Card>
+        <Card className="flex flex-col p-5 pb-8">
           <div className="mb-3 flex items-start justify-between gap-3">
             <h3 className="text-sm font-bold text-muted-foreground">
               🏷️ Komposisi Kategori
             </h3>
-            <span className="shrink-0 text-xs text-muted-foreground">30 hari terakhir</span>
+            <span className="shrink-0 text-xs font-semibold text-muted-foreground">30 Hari Terakhir</span>
           </div>
           {dash.category_chart.length > 0 ? (
             <>
@@ -170,9 +170,11 @@ export default function DashboardPage() {
                       innerRadius={50}
                       outerRadius={72}
                       paddingAngle={3}
+                      startAngle={90}
+                      endAngle={-270}
                     >
                       {dash.category_chart.map((category, i) => (
-                        <Cell key={category.key} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                        <Cell key={category.key} fill={getCategoryColor(category.key, i)} />
                       ))}
                     </Pie>
                     <Tooltip formatter={(v: number) => formatCurrency(v)} />
@@ -186,31 +188,42 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <div className="mt-3 space-y-3">
-                {dash.category_chart.map((c, i) => (
-                  <div key={c.key} className="space-y-1.5">
-                    <div className="flex items-center justify-between gap-3 text-xs">
-                      <span className="min-w-0 truncate font-medium text-slate-700 dark:text-slate-200">
-                        {c.label}{" "}
-                        <span className="text-muted-foreground">
-                          {categoryTotal > 0 ? Math.round((c.total / categoryTotal) * 100) : 0}%
+              <div className="mt-4 space-y-3 pb-2">
+                {dash.category_chart.map((c, i) => {
+                  const color = getCategoryColor(c.key, i);
+                  const pct = categoryTotal > 0 ? Math.round((c.total / categoryTotal) * 100) : 0;
+                  return (
+                    <div key={c.key} className="space-y-1.5">
+                      <div className="flex items-center justify-between gap-3 text-xs">
+                        <div className="flex min-w-0 items-center gap-2">
+                          <span
+                            className="h-2.5 w-2.5 shrink-0 rounded-full"
+                            style={{ backgroundColor: color }}
+                            aria-hidden="true"
+                          />
+                          <span className="truncate font-medium text-slate-700 dark:text-slate-200">
+                            {c.label}
+                          </span>
+                          <span className="shrink-0 text-muted-foreground">
+                            {pct}%
+                          </span>
+                        </div>
+                        <span className="shrink-0 font-semibold text-slate-700 dark:text-slate-200">
+                          {formatCurrency(c.total)}
                         </span>
-                      </span>
-                      <span className="shrink-0 font-semibold text-slate-700 dark:text-slate-200">
-                        {formatCurrency(c.total)}
-                      </span>
+                      </div>
+                      <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                        <div
+                          className="h-full rounded-full transition-all duration-300"
+                          style={{
+                            width: `${pct}%`,
+                            background: color,
+                          }}
+                        />
+                      </div>
                     </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                      <div
-                        className="h-full rounded-full"
-                        style={{
-                          width: `${categoryTotal > 0 ? (c.total / categoryTotal) * 100 : 0}%`,
-                          background: PIE_COLORS[i % PIE_COLORS.length],
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </>
           ) : (

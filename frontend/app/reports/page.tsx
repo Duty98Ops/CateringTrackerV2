@@ -9,7 +9,7 @@ import {
   fetchRangeReport, fetchCategoryReport, fetchMonthlyReport,
 } from "@/lib/api";
 import type { RangeReport, CategoryReport, MonthlyReport } from "@/lib/types";
-import { formatCurrency, formatCurrencyShort, PIE_COLORS } from "@/lib/types";
+import { formatCurrency, formatCurrencyShort, getCategoryColor } from "@/lib/types";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -136,7 +136,7 @@ export default function ReportsPage() {
                               className="h-full rounded-md transition-all duration-500"
                               style={{
                                 width: `${pct}%`,
-                                background: PIE_COLORS[i % PIE_COLORS.length],
+                                background: getCategoryColor(c.key, i),
                               }}
                             />
                           </div>

@@ -56,7 +56,7 @@ export function Sidebar() {
       {/* Sidebar — fixed drawer on mobile, sticky column on desktop */}
       <aside
         className={cn(
-          "fixed top-0 z-50 flex h-screen w-56 flex-col gap-1 overflow-y-auto p-3 transition-transform duration-200",
+          "fixed top-0 z-50 flex h-screen w-56 flex-col gap-1 overflow-y-auto border-r border-slate-800/80 p-3 transition-transform duration-200 shadow-sm",
           "md:sticky md:translate-x-0",
           mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}
@@ -92,12 +92,14 @@ export function Sidebar() {
               href={item.href}
               className={cn(
                 "flex items-center gap-2.5 rounded-lg px-3.5 py-2.5 text-[13px] font-medium transition-all",
-                isActive ? "font-bold" : "hover:opacity-80"
+                isActive
+                  ? "font-bold text-white shadow-sm ring-1 ring-white/10"
+                  : "hover:bg-white/[0.06] hover:text-white"
               )}
               style={{
-                background: isActive ? "rgba(192,94,60,0.15)" : "transparent",
+                background: isActive ? "hsl(var(--primary) / 0.28)" : "transparent",
                 color: isActive
-                  ? "hsl(var(--sidebar-active))"
+                  ? "#ffffff"
                   : "hsl(var(--sidebar-text))",
               }}
             >

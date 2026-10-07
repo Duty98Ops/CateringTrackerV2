@@ -25,9 +25,9 @@
     --ring: 14 46% 47%;
     --radius: 0.625rem;
 
-    --sidebar-bg: 22 10% 23%;
-    --sidebar-text: 30 12% 68%;
-    --sidebar-active: 14 67% 68%;
+    --sidebar-bg: 222 16% 14%;
+    --sidebar-text: 218 14% 65%;
+    --sidebar-active: 0 0% 100%;
   }
 
   .dark {
@@ -49,9 +49,9 @@
     --input: 22 8% 30%;
     --ring: 14 58% 63%;
 
-    --sidebar-bg: 22 10% 14%;
-    --sidebar-text: 30 9% 62%;
-    --sidebar-active: 14 58% 63%;
+    --sidebar-bg: 222 18% 11%;
+    --sidebar-text: 218 14% 60%;
+    --sidebar-active: 0 0% 100%;
   }
 }
 

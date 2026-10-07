@@ -215,15 +215,31 @@ export const PIE_COLORS = [
   "#48bfe3", "#f77f00", "#d62828", "#264653",
 ];
 
+export const CATEGORY_COLORS: Record<string, string> = {
+  daging: "#e07a5f",
+  bahan_pokok: "#3d405b",
+  bumbu: "#81b29a",
+  packaging: "#f2cc8f",
+  susu_telur: "#5e60ce",
+  sayuran: "#48bfe3",
+  gas_listrik: "#f77f00",
+  minuman: "#d62828",
+  lainnya: "#264653",
+};
+
+export function getCategoryColor(key: string, index = 0): string {
+  return CATEGORY_COLORS[key] || PIE_COLORS[index % PIE_COLORS.length];
+}
+
 // ── Formatters ─────────────────────────────────────────────
 
 export function formatCurrency(n: number): string {
-  return "Rp " + Math.round(n).toLocaleString("id-ID");
+  return "Rp\u00A0" + Math.round(n).toLocaleString("id-ID");
 }
 
 export function formatCurrencyShort(n: number): string {
-  if (n >= 1_000_000) return "Rp " + (n / 1_000_000).toFixed(1) + "jt";
-  if (n >= 1_000) return "Rp " + (n / 1_000).toFixed(0) + "rb";
+  if (n >= 1_000_000) return "Rp\u00A0" + (n / 1_000_000).toFixed(1) + "jt";
+  if (n >= 1_000) return "Rp\u00A0" + (n / 1_000).toFixed(0) + "rb";
   return formatCurrency(n);
 }
 
