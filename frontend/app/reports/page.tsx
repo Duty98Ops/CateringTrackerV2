@@ -8,6 +8,7 @@ import {
 import {
   fetchRangeReport, fetchCategoryReport, fetchMonthlyReport,
 } from "@/lib/api";
+import { BarChart3, CalendarDays, CalendarRange, Download } from "lucide-react";
 import type { RangeReport, CategoryReport, MonthlyReport } from "@/lib/types";
 import { formatCurrency, formatCurrencyShort, getCategoryColor } from "@/lib/types";
 import { Card } from "@/components/ui/card";
@@ -66,31 +67,29 @@ export default function ReportsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-extrabold tracking-tight">📊 Laporan</h1>
-        <a
-          href="/api/export/csv"
-          download
-          className="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90"
-        >
-          📥 Ekspor CSV
+        <div className="flex items-center gap-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-blue-500 text-blue-600">
+            <BarChart3 className="h-5 w-5" />
+          </span>
+          <div>
+            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Laporan</h1>
+            <p className="mt-0.5 text-xs text-slate-500">Ikhtisar biaya belanja bahan baku dan tren alokasi modal operasional katering</p>
+          </div>
+        </div>
+        <a href="/api/export/csv" download className="inline-flex h-9 items-center gap-2 rounded-xl bg-blue-600 px-4 text-xs font-semibold text-white shadow-sm transition-all hover:bg-blue-700">
+          <Download className="h-3.5 w-3.5" />
+          Ekspor CSV
         </a>
       </div>
 
       {/* Tab switcher */}
-      <div className="flex gap-1 rounded-xl bg-secondary p-1">
+      <div className="flex w-fit gap-1 rounded-xl border border-slate-200 bg-slate-100 p-1">
         {([
-          { key: "range" as Tab, label: "📆 Rentang Tanggal" },
-          { key: "monthly" as Tab, label: "📅 Bulanan" },
+          { key: "range" as Tab, label: "Rentang Tanggal", icon: CalendarRange },
+          { key: "monthly" as Tab, label: "Bulanan", icon: CalendarDays },
         ]).map((t) => (
-          <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
-            className={`flex-1 rounded-lg px-3 py-2 text-[12px] font-semibold transition-all sm:flex-none sm:px-5 sm:text-[13px] ${
-              tab === t.key
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
+          <button key={t.key} onClick={() => setTab(t.key)} className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-all sm:px-4 ${tab === t.key ? "bg-blue-600 text-white shadow-sm" : "text-slate-600 hover:text-slate-900"}`}>
+            <t.icon className="h-3.5 w-3.5" />
             {t.label}
           </button>
         ))}
@@ -170,12 +169,12 @@ export default function ReportsPage() {
             <div className="mb-3 flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 pb-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-bold text-slate-900">Tren Bulanan</h3>
-                  <span className="rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-semibold text-orange-600">{monthly.length} Periode Terdata</span>
+                  <h3 className="text-base font-bold text-slate-900">Tren Bulanan</h3>
+                  <span className="rounded-full bg-orange-50 px-2.5 py-1 text-xs font-semibold text-orange-600">{monthly.length} Periode Terdata</span>
                 </div>
-                <p className="mt-1 text-[11px] text-slate-500">Pergerakan total biaya belanja bahan baku per periode bulan operasional</p>
+                <p className="mt-1 text-sm text-slate-500">Pergerakan total biaya belanja bahan baku per periode bulan operasional</p>
               </div>
-              <div className="flex items-center gap-1.5 text-[11px] text-slate-600"><span className="h-2.5 w-2.5 rounded-full bg-orange-500" />Realisasi Belanja Bulanan</div>
+              <div className="flex items-center gap-2 text-sm text-slate-600"><span className="h-2.5 w-2.5 rounded-full bg-orange-500" />Realisasi Belanja Bulanan</div>
             </div>
             <ResponsiveContainer width="100%" height={255}>
               <AreaChart data={monthly} margin={{ top: 18, right: 8, left: 0, bottom: 2 }}>
@@ -187,13 +186,13 @@ export default function ReportsPage() {
                 </defs>
                 <CartesianGrid vertical={false} strokeDasharray="3 4" stroke="#e7edf5" />
                 <XAxis dataKey="month" axisLine={{ stroke: "#cbd5e1" }} tickLine={false} tick={{ fontSize: 10, fill: "#475569" }} />
-                <YAxis width={54} axisLine={false} tickLine={false} tick={{ fontSize: 9, fill: "#64748b" }} tickFormatter={formatCurrencyShort} />
+                <YAxis width={58} axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#64748b" }} tickFormatter={formatCurrencyShort} />
                 <Tooltip formatter={(value: number) => [formatCurrency(value), "Realisasi"]} labelFormatter={(label) => `${label}${monthlyPeak?.month === label ? " (Puncak)" : ""}`} contentStyle={{ borderRadius: 10, border: "0", background: "#1e293b", color: "white", fontSize: 11 }} labelStyle={{ color: "#cbd5e1" }} />
                 {monthlyPeak && <ReferenceLine x={monthlyPeak.month} stroke="#fdba74" strokeDasharray="3 3" />}
                 <Area type="monotone" dataKey="total" stroke="#f97316" strokeWidth={2.5} fill="url(#monthlySpendFill)" activeDot={{ r: 5, fill: "#f97316", stroke: "white", strokeWidth: 2 }} dot={{ r: 3, fill: "#f97316", stroke: "white", strokeWidth: 1.5 }} name="Realisasi" />
               </AreaChart>
             </ResponsiveContainer>
-            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3 text-[10px] text-slate-500">
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3 text-xs text-slate-500">
               <span>ⓘ Data bersumber dari catatan pembukuan transaksi operasional terverifikasi</span>
               {monthlyPeak && <span className="text-slate-700">Puncak belanja tercatat pada periode <strong className="text-orange-600">{monthlyPeak.month}</strong> ({formatCurrency(monthlyPeak.total)})</span>}
             </div>
@@ -202,15 +201,15 @@ export default function ReportsPage() {
           <Card className="overflow-hidden border-slate-200 bg-white p-0">
             <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-4 sm:px-5">
               <div>
-                <h3 className="text-sm font-bold text-slate-900">Ringkasan Pengeluaran Bulanan</h3>
-                <p className="mt-1 text-[11px] text-slate-500">Matriks kompilasi data hari belanja aktif, jumlah komoditas, dan nominal biaya</p>
+                <h3 className="text-base font-bold text-slate-900">Ringkasan Pengeluaran Bulanan</h3>
+                <p className="mt-1 text-sm text-slate-500">Matriks kompilasi data hari belanja aktif, jumlah komoditas, dan nominal biaya</p>
               </div>
-              <span className="shrink-0 rounded bg-slate-100 px-2 py-1 text-[10px] font-medium text-slate-600">{monthly.length} Periode Laporan</span>
+              <span className="shrink-0 rounded bg-slate-100 px-2.5 py-1.5 text-xs font-medium text-slate-600">{monthly.length} Periode Laporan</span>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[520px] text-[11px]">
+              <table className="w-full min-w-[520px] text-sm">
                 <thead>
-                  <tr className="bg-slate-50 text-[9px] uppercase tracking-wide text-slate-500">
+                  <tr className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                     <th className="px-4 py-3 text-left font-semibold sm:px-5">Bulan</th>
                     <th className="px-4 py-3 text-right font-semibold">Hari</th>
                     <th className="px-4 py-3 text-right font-semibold">Item</th>
@@ -226,8 +225,8 @@ export default function ReportsPage() {
                         <td className="px-4 py-3 font-semibold text-slate-800 sm:px-5">
                           <span className={`mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle ${isPeak ? "bg-orange-500" : isLatest ? "bg-blue-500" : "bg-slate-300"}`} />
                           {m.month}
-                          {isPeak && <span className="ml-2 rounded-full bg-orange-100 px-1.5 py-0.5 text-[8px] font-semibold text-orange-700">Puncak</span>}
-                          {isLatest && <span className="ml-2 rounded-full bg-blue-50 px-1.5 py-0.5 text-[8px] font-semibold text-blue-700">Terbaru</span>}
+                          {isPeak && <span className="ml-2 rounded-full bg-orange-100 px-2 py-1 text-[10px] font-semibold text-orange-700">Puncak</span>}
+                          {isLatest && <span className="ml-2 rounded-full bg-blue-50 px-2 py-1 text-[10px] font-semibold text-blue-700">Terbaru</span>}
                         </td>
                         <td className="px-4 py-3 text-right text-slate-700">{m.days} <span className="text-slate-400">Hari</span></td>
                         <td className="px-4 py-3 text-right text-slate-700">{m.items} <span className="text-slate-400">Item</span></td>
@@ -238,7 +237,7 @@ export default function ReportsPage() {
                 </tbody>
                 <tfoot>
                   <tr className="border-t border-slate-200 bg-slate-50 font-semibold text-slate-700">
-                    <td className="px-4 py-3 text-[9px] uppercase tracking-wide sm:px-5">Total Akumulasi</td>
+                    <td className="px-4 py-3 text-xs uppercase tracking-wide sm:px-5">Total Akumulasi</td>
                     <td className="px-4 py-3 text-right">{monthlyDays} <span className="font-normal text-slate-400">Hari</span></td>
                     <td className="px-4 py-3 text-right">{monthlyItems} <span className="font-normal text-slate-400">Item</span></td>
                     <td className="px-4 py-3 text-right font-mono text-blue-600 sm:px-5">{formatCurrency(monthlyTotal)}</td>
