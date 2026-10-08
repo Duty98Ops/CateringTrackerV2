@@ -18,10 +18,8 @@ import {
   BarChart3,
   CalendarDays,
   CheckCircle2,
-  Download,
   Plus,
   Receipt,
-  Search,
   ShoppingCart,
   Tag,
   TrendingUp,
@@ -66,8 +64,6 @@ export default function DashboardPage() {
   const [transactions, setTransactions] = useState<DayTransaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [period, setPeriod] = useState<"30" | "7" | "month">("30");
-  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     Promise.all([
@@ -133,18 +129,8 @@ export default function DashboardPage() {
       return timeB.localeCompare(timeA);
     });
 
-    if (!searchQuery.trim()) return list.slice(0, 5);
-
-    const q = searchQuery.toLowerCase();
-    return list
-      .filter((b) => {
-        const matchItem = b.items?.some((i) => i.name.toLowerCase().includes(q));
-        const matchSupplier = (b.supplier_name || "").toLowerCase().includes(q);
-        const matchDate = b.date.includes(q);
-        return matchItem || matchSupplier || matchDate;
-      })
-      .slice(0, 5);
-  }, [transactions, searchQuery]);
+    return list.slice(0, 5);
+  }, [transactions]);
 
   const totalBulksCount = useMemo(() => {
     return transactions.reduce((acc, curr) => acc + (curr.bulk_inputs?.length || 0), 0);
@@ -201,62 +187,6 @@ export default function DashboardPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
-          {/* Search bar */}
-          <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Cari transaksi/supplier..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-48 sm:w-60 rounded-xl border border-slate-200/80 bg-white py-2 pl-9 pr-3 text-xs text-slate-700 placeholder-slate-400 shadow-sm transition-all focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-            />
-          </div>
-
-          {/* Period Filter Segmented Control */}
-          <div className="flex items-center rounded-xl border border-slate-200/70 bg-slate-100/90 p-1 text-xs">
-            <button
-              onClick={() => setPeriod("30")}
-              className={`rounded-lg px-3 py-1.5 font-bold transition-all ${
-                period === "30"
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-500 hover:text-slate-900"
-              }`}
-            >
-              30 Hari
-            </button>
-            <button
-              onClick={() => setPeriod("7")}
-              className={`rounded-lg px-3 py-1.5 font-medium transition-all ${
-                period === "7"
-                  ? "bg-white text-slate-900 shadow-sm font-bold"
-                  : "text-slate-500 hover:text-slate-900"
-              }`}
-            >
-              7 Hari
-            </button>
-            <button
-              onClick={() => setPeriod("month")}
-              className={`rounded-lg px-3 py-1.5 font-medium transition-all ${
-                period === "month"
-                  ? "bg-white text-slate-900 shadow-sm font-bold"
-                  : "text-slate-500 hover:text-slate-900"
-              }`}
-            >
-              Bulan Ini
-            </button>
-          </div>
-
-          {/* Export CSV button */}
-          <a
-            href="/api/export/csv"
-            download
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50"
-          >
-            <Download className="h-3.5 w-3.5 text-slate-500" />
-            <span>Export</span>
-          </a>
-
           {/* Primary CTA button */}
           <button
             onClick={() => router.push("/add")}
