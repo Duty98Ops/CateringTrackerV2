@@ -8,13 +8,12 @@ import {
 import {
   fetchRangeReport, fetchCategoryReport, fetchMonthlyReport,
 } from "@/lib/api";
-import { BarChart3, CalendarDays, CalendarRange, Download } from "lucide-react";
+import { BarChart3, CalendarCheck, CalendarDays, CalendarRange, CircleDollarSign, Download, Filter, Package } from "lucide-react";
 import type { RangeReport, CategoryReport, MonthlyReport } from "@/lib/types";
 import { formatCurrency, formatCurrencyShort, getCategoryColor } from "@/lib/types";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { StatCard } from "@/components/stat-card";
 
 type Tab = "range" | "monthly";
 
@@ -97,60 +96,77 @@ export default function ReportsPage() {
 
       {/* ── Range Tab ────────────────────────────────── */}
       {tab === "range" && (
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-            <Input label="Dari" type="date" value={start} onChange={(e) => setStart(e.target.value)} />
-            <Input label="Sampai" type="date" value={end} onChange={(e) => setEnd(e.target.value)} />
-            <Button onClick={loadRange} disabled={loading}>
+        <div className="flex flex-col gap-5">
+          <div className="grid grid-cols-1 items-end gap-3 rounded-2xl border border-slate-100 bg-white p-3 shadow-sm sm:grid-cols-[1fr_1fr_auto] sm:gap-4 sm:p-4">
+            <Input label="Dari" type="date" value={start} onChange={(e) => setStart(e.target.value)} className="h-11 border-slate-200 bg-white text-sm" />
+            <Input label="Sampai" type="date" value={end} onChange={(e) => setEnd(e.target.value)} className="h-11 border-slate-200 bg-white text-sm" />
+            <Button onClick={loadRange} disabled={loading} className="h-11 rounded-xl bg-blue-600 px-6 text-sm hover:bg-blue-700">
+              <Filter className="h-4 w-4" />
               {loading ? "Memuat..." : "Tampilkan"}
             </Button>
           </div>
 
           {report && (
             <>
-              <div className="flex flex-wrap gap-4">
-                <StatCard icon="💰" label="Total Pengeluaran" value={formatCurrency(report.grand_total)} accent="#e07a5f" />
-                <StatCard icon="📅" label="Hari dengan Data" value={String(report.days_with_data)} />
-                <StatCard icon="📦" label="Total Item" value={String(report.total_items)} />
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+                {[
+                  { label: "Total Pengeluaran", value: formatCurrency(report.grand_total), sub: "Akumulasi biaya pada periode terpilih", icon: CircleDollarSign, tone: "text-amber-700 bg-amber-50" },
+                  { label: "Hari dengan Data", value: String(report.days_with_data), sub: "Hari aktivitas belanja tercatat", icon: CalendarCheck, tone: "text-blue-700 bg-blue-50" },
+                  { label: "Total Item", value: String(report.total_items), sub: "Jenis komoditas dibeli", icon: Package, tone: "text-emerald-700 bg-emerald-50" },
+                ].map((stat) => (
+                  <div key={stat.label} className="flex min-h-[132px] flex-col justify-between rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-xs font-bold uppercase tracking-wide text-slate-500">{stat.label}</p>
+                      <span className={`flex h-8 w-8 items-center justify-center rounded-lg ${stat.tone}`}><stat.icon className="h-4 w-4" /></span>
+                    </div>
+                    <div className="mt-2 whitespace-nowrap text-2xl font-black tracking-tight text-slate-900">{stat.value}</div>
+                    <p className="mt-1 text-xs text-slate-500">{stat.sub}</p>
+                  </div>
+                ))}
               </div>
 
               {report.days.length > 0 && (
-                <Card>
-                  <h3 className="mb-4 text-sm font-bold text-muted-foreground">Pengeluaran per Hari</h3>
-                  <ResponsiveContainer width="100%" height={260}>
-                    <BarChart data={report.days}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                      <XAxis dataKey="date" tick={{ fontSize: 10 }} tickFormatter={(v: string) => v.slice(5)} />
-                      <YAxis tick={{ fontSize: 10 }} tickFormatter={formatCurrencyShort} />
-                      <Tooltip formatter={(v: number) => formatCurrency(v)} />
-                      <Bar dataKey="day_total" fill="#81b29a" radius={[4, 4, 0, 0]} name="Total" />
+                <Card className="border-slate-100 bg-white p-4 sm:p-5">
+                  <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
+                    <div>
+                      <h3 className="text-base font-bold text-slate-900">Pengeluaran per Hari</h3>
+                      <p className="mt-0.5 text-sm text-slate-500">Distribusi beban operasional bahan baku sepanjang periode aktif</p>
+                    </div>
+                    <span className="flex items-center gap-2 text-xs font-medium text-slate-600"><span className="h-2.5 w-2.5 rounded-sm bg-emerald-600" />Pengeluaran (Rp)</span>
+                  </div>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={report.days} margin={{ top: 8, right: 8, left: 0, bottom: 2 }}>
+                      <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#dbe5f3" />
+                      <XAxis dataKey="date" axisLine={{ stroke: "#cbd5e1" }} tickLine={false} tick={{ fontSize: 11, fill: "#334155" }} tickFormatter={(v: string) => v.slice(5)} />
+                      <YAxis width={62} axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#475569" }} tickFormatter={formatCurrencyShort} />
+                      <Tooltip formatter={(v: number) => [formatCurrency(v), "Pengeluaran"]} contentStyle={{ borderRadius: 10, border: "0", background: "#1e293b", color: "white", fontSize: 12 }} labelStyle={{ color: "#cbd5e1" }} />
+                      <Bar dataKey="day_total" fill="#059669" radius={[5, 5, 0, 0]} name="Pengeluaran" />
                     </BarChart>
                   </ResponsiveContainer>
                 </Card>
               )}
 
               {catReport.length > 0 && (
-                <Card>
-                  <h3 className="mb-4 text-sm font-bold text-muted-foreground">Breakdown Kategori</h3>
-                  <div className="flex flex-col gap-2.5">
+                <Card className="border-slate-100 bg-white p-4 sm:p-5">
+                  <div className="mb-5 flex flex-wrap items-start justify-between gap-2">
+                    <div>
+                      <h3 className="text-base font-bold text-slate-900">Breakdown Kategori</h3>
+                      <p className="mt-0.5 text-sm text-slate-500">Komposisi biaya pengeluaran bahan dasar</p>
+                    </div>
+                    <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">{catReport.length} Kategori Tercatat</span>
+                  </div>
+                  <div className="flex flex-col gap-4">
                     {catReport.map((c, i) => {
                       const pct = report.grand_total > 0 ? (c.total / report.grand_total) * 100 : 0;
                       return (
-                        <div key={c.key} className="flex flex-wrap items-center gap-2 sm:gap-3">
-                          <span className="w-full text-[13px] font-medium sm:w-36">{c.icon} {c.label}</span>
-                          <div className="h-5 flex-1 overflow-hidden rounded-md bg-secondary sm:h-6">
-                            <div
-                              className="h-full rounded-md transition-all duration-500"
-                              style={{
-                                width: `${pct}%`,
-                                background: getCategoryColor(c.key, i),
-                              }}
-                            />
+                        <div key={c.key}>
+                          <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-sm">
+                            <span className="font-medium text-slate-800">{c.icon} {c.label}</span>
+                            <span className="flex items-center gap-3 text-xs sm:text-sm"><strong className="font-semibold text-slate-800">{formatCurrency(c.total)}</strong><span className="w-12 text-right text-slate-500">{pct.toFixed(1)}%</span></span>
                           </div>
-                          <span className="whitespace-nowrap text-right text-xs font-bold sm:w-24">{formatCurrency(c.total)}</span>
-                          <span className="whitespace-nowrap text-right text-[11px] text-muted-foreground sm:w-12">
-                            {pct.toFixed(1)}%
-                          </span>
+                          <div className="h-2.5 overflow-hidden rounded-full bg-indigo-100">
+                            <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: getCategoryColor(c.key, i) }} />
+                          </div>
                         </div>
                       );
                     })}
